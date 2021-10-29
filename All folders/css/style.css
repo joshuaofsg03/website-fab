@@ -1,0 +1,17 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+body.img {
+    /*source of image https://nintendo.fandom.com/wiki/Snom*/
+    background-image: url("../img/snom.png");
+    background-repeat: repeat;
+}
+
+div.padded {
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+}
+

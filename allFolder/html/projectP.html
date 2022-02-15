@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <title>Joshua's Website</title>
     <meta charset="UTF-8">
     <meta name="description" content="Joshua's Website">
@@ -10,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/webP.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -19,12 +19,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
 </head>
 <!--
 
     Place all arduino here
 -->
+
 <body class="img">
     <nav class="navbar navbar-expand-lg navbar-light bg-dark primary">
         <ul class="navbar-nav">
@@ -41,7 +41,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="webP.html">Web Development</a>
-                    <a class="dropdown-item" href="projectP.html">Embeded Programming</a>
+                    <a class="dropdown-item" href="projectP.html">Arduino</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -60,6 +60,223 @@
         </ul>
 
     </nav>
+    <div class="container-fluid bg-light pb-3 padded">
+        <div class="pt-3 mb-3">
+            <h2>Programming in Tinkercad</h2>
+        </div>
+        <div class="row pt-3">
+            <div class="col-lg-6">
+                <div class="polaroid">
+                    <img src="../img/embedded/Picture1.png" alt="folder screenshot" style="width:100%">
+                    <div class="containertxt">
+                        <p>Switch-Case to change through colours or modes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="polaroid">
+                    <img src="../img/embedded/Picture2.png" alt="folder screenshot" style="width:100%">
+                    <div class="containertxt">
+                        <p>First Working Iteration</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-11">
+                <div class="polaroid">
+                    <p>
+                    <pre>
+                        <code>
+#include &lt Adafruit_NeoPixel.h>
+
+    #define BUTTON_PIN   2    // Digital IO pin connected to the button.  This will be
+                            // driven with a pull-up resistor so the switch should
+                            // pull the pin to ground momentarily.  On a high -> low
+                            // transition the button press logic will execute.
+    
+    #define PIXEL_PIN    9   // Digital IO pin connected to the NeoPixels.
+    
+    #define PIXEL_COUNT 16   // number of neopixel (change this accordingly)
+    
+    // Parameter 1 = number of pixels in strip,  neopixel stick has 8
+    // Parameter 2 = pin number (most are valid)
+    // Parameter 3 = pixel type flags, add together as needed:
+    //   NEO_RGB     Pixels are wired for RGB bitstream
+    //   NEO_GRB     Pixels are wired for GRB bitstream, correct for neopixel stick
+    //   NEO_KHZ400  400 KHz bitstream (e.g. FLORA pixels)
+    //   NEO_KHZ800  800 KHz bitstream (e.g. High Density LED strip), correct for neopixel stick
+    Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
+    
+    bool oldState = HIGH;
+    int showType = 0;
+    
+    void setup() {
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    strip.begin();
+    strip.show(); // Initialize all pixels to 'off'
+    }
+    
+    void loop() {
+    // Get current button state.
+    bool newState = digitalRead(BUTTON_PIN);
+    
+    // Check if state changed from high to low (button press).
+    if (newState == LOW && oldState == HIGH) {
+        // Short delay to debounce button.
+        delay(20);
+        // Check if button is still low after debounce.
+        newState = digitalRead(BUTTON_PIN);
+        if (newState == LOW) {
+        showType++;
+        if (showType > 9)
+            showType=0;
+        startShow(showType);
+        }
+    }
+    
+    // Set the last button state to the old state.
+    oldState = newState;
+    }
+    
+    void startShow(int i) {
+    switch(i){
+        case 0: colorWipe(strip.Color(0, 0, 0), 50);    // Black/off
+                break;//keep
+        
+        case 1: colorWipe(strip.Color(255, 0, 0), 50);  // Red
+                break;//keep
+        case 2: colorWipe(strip.Color(255, 165,0), 50);  // ornage
+                break;//keep
+        case 3: colorWipe(strip.Color(255, 255,0), 50);  // yellow
+                break;//keep
+        case 4: colorWipe(strip.Color(0, 255, 0), 50);  // Green
+                break;//keep
+        case 5: colorWipe(strip.Color(0, 0, 255), 50);  // Blue
+                break;//keep
+        case 6: colorWipe(strip.Color(128, 0, 128), 50);  // Blue
+                break;//keep
+        case 7: rainbow(20);
+                break;
+        case 8: rainbowCycle(20);
+                break;
+        case 9: theaterChaseRainbow(50);
+                break;
+    }
+    }
+    
+    // Fill the dots one after the other with a color
+    void colorWipe(uint32_t c, uint8_t wait) {
+    for(uint16_t i=0; i&ltstrip.numPixels(); i++) {
+        strip.setPixelColor(i, c);
+        strip.show();
+        delay(wait);
+    }
+    }
+    
+    void rainbow(uint8_t wait) {
+    uint16_t i, j;
+    
+    for(j=0; j&lt256; j++) {
+        for(i=0; i&ltstrip.numPixels(); i++) {
+        strip.setPixelColor(i, Wheel((i+j) & 255));
+        }
+        strip.show();
+        delay(wait);
+    }
+    }
+    
+    // Slightly different, this makes the rainbow equally distributed throughout
+    void rainbowCycle(uint8_t wait) {
+    uint16_t i, j;
+    
+    for(j=0; j&lt256*5; j++) { // 5 cycles of all colors on wheel
+        for(i=0; i&lt strip.numPixels(); i++) {
+        strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
+        }
+        strip.show();
+        delay(wait);
+    }
+    }
+    
+    //Theatre-style crawling lights.
+    void theaterChase(uint32_t c, uint8_t wait) {
+    for (int j=0; j&lt10; j++) {  //do 10 cycles of chasing
+        for (int q=0; q &lt 3; q++) {
+        for (int i=0; i &lt strip.numPixels(); i=i+3) {
+            strip.setPixelColor(i+q, c);    //turn every third pixel on
+        }
+        strip.show();
+    
+        delay(wait);
+    
+        for (int i=0; i &lt strip.numPixels(); i=i+3) {
+            strip.setPixelColor(i+q, 0);        //turn every third pixel off
+        }
+        }
+    }
+    }
+    
+    //Theatre-style crawling lights with rainbow effect
+    void theaterChaseRainbow(uint8_t wait) {
+    for (int j=0; j &lt 256; j++) {     // cycle all 256 colors in the wheel
+        for (int q=0; q &lt 3; q++) {
+        for (int i=0; i &lt strip.numPixels(); i=i+3) {
+            strip.setPixelColor(i+q, Wheel( (i+j) % 255));    //turn every third pixel on
+        }
+        strip.show();
+    
+        delay(wait);
+    
+        for (int i=0; i &lt strip.numPixels(); i=i+3) {
+            strip.setPixelColor(i+q, 0);        //turn every third pixel off
+        }
+        }
+    }
+    }
+    
+    // Input a value 0 to 255 to get a color value.
+    // The colours are a transition r - g - b - back to r.
+    uint32_t Wheel(byte WheelPos) {
+    WheelPos = 255 - WheelPos;
+    if(WheelPos &lt 85) {
+        return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+    }
+    if(WheelPos &lt 170) {
+        WheelPos -= 85;
+        return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+    }
+    WheelPos -= 170;
+    return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+    }
+                        </code></pre>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <p>
+                    The code works by checking for any possible input by a button. If it detects
+                    a current from the button, it will cause the case varible to increase in value by one.
+                    <br>
+                    The code then changes the output based on the case id. It can change colour or produce a rainbow
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <div class="polaroid">
+                    <img src="../img/embedded/Picture3.png" alt="folder screenshot" style="width:100%">
+                    <div class="containertxt">
+                        <p>How its wired</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="polaroid">
+                    <img src="../img/embedded/Picture3.png" alt="folder screenshot" style="width:100%">
+                    <div class="containertxt">
+                        <p>How it looks like</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer>
         <div class="container-fluid bg-light pb-3 padded">
             <div>
